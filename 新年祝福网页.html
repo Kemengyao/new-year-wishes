@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI新年祝福生成器</title>
+    <style>
+        :root {
+            --primary-color: #c62f2f;
+            --secondary-color: #ffd700;
+        }
+
+        body {
+            background: linear-gradient(135deg, #c62f2f 0%, #8b0000 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Microsoft YaHei', sans-serif;
+            padding: 2rem;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 45%,
+                rgba(255, 215, 0, 0.1) 50%,
+                transparent 55%);
+            animation: shine 6s infinite;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 1rem;
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            resize: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 0 15px var(--secondary-color);
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--primary-color), #ff6b6b);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            color: #333;
+            min-height: 100px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes shine {
+            0% { transform: translate(-50%, -50%) rotate(45deg); }
+            100% { transform: translate(50%, 50%) rotate(45deg); }
+        }
+
+        .decorations {
+            position: fixed;
+            pointer-events: none;
+        }
+
+        .lantern {
+            width: 50px;
+            position: fixed;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 AI新年祝福生成器 🎊</h1>
+        <div class="input-group">
+            <textarea id="wishInput" placeholder="写下您的新年愿望，例如：希望新的一年事业进步，家人健康平安..."></textarea>
+        </div>
+        <button onclick="generateBlessing()">生成专属祝福</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const semanticMap = {
+            '事业': ['鸿图大展', '步步高升', '成就非凡'],
+            '健康': ['安康如意', '神采奕奕', '活力永驻'],
+            '家庭': ['和和美美', '天伦永享', '温馨满堂'],
+            '学业': ['金榜题名', '才思泉涌', '学业精进'],
+            '财富': ['财源广进', '金玉满堂', '富贵临门'],
+            '爱情': ['良缘天成', '心心相印', '白首不离']
+        };
+
+        function analyzeSemantics(text) {
+            const keywords = [];
+            for (const category in semanticMap) {
+                if (text.includes(category)) {
+                    keywords.push(category);
+                }
+            }
+            return keywords.length > 0 ? keywords : ['通用'];
+        }
+
+        function generateBlessing() {
+            const inputText = document.getElementById('wishInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!inputText) {
+                resultDiv.innerHTML = "请先写下您的新年愿望~";
+                resultDiv.classList.add('show');
+                return;
+            }
+
+            const categories = analyzeSemantics(inputText);
+            const blessingTemplate = buildTemplate(categories);
+            
+            resultDiv.innerHTML = blessingTemplate;
+            resultDiv.classList.add('show');
+        }
+
+        function buildTemplate(categories) {
+            const structure = [
+                "在这辞旧迎新之际，",
+                "{BEGINNING}",
+                "愿您{MAIN_CONTENT}，",
+                "{ENDING}。",
+                "新春快乐，{FINAL_WISH}！"
+            ];
+
+            const components = {
+                BEGINNING: [
+                    "万象更新之时",
+                    "钟声即将敲响之际",
+                    "瑞雪纷飞的日子里"
+                ],
+                MAIN_CONTENT: [],
+                ENDING: [
+                    "福星高照常相伴",
+                    "吉祥如意永相随",
+                    "幸福安康长相守"
+                ],
+                FINAL_WISH: [
+                    "万事顺遂",
+                    "心想事成",
+                    "岁岁欢愉"
+                ]
+            };
+
+            categories.forEach(cat => {
+                if (semanticMap[cat]) {
+                    components.MAIN_CONTENT.push(
+                        ...semanticMap[cat].map(phrase => `${cat}${phrase}`)
+                    );
+                }
+            });
+
+            if (components.MAIN_CONTENT.length === 0) {
+                components.MAIN_CONTENT.push(...Object.values(semanticMap).flat());
+            }
+
+            const getRandom = arr => arr[Math.floor(Math.random() * arr.length)];
+            
+            return structure.map(part => {
+                const placeholder = part.match(/{(.*?)}/);
+                if (placeholder) {
+                    const key = placeholder[1];
+                    return part.replace(`{${key}}`, getRandom(components[key]));
+                }
+                return part;
+            }).join(' ');
+        }
+    </script>
+</body>
+</html>
